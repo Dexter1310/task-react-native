@@ -1,0 +1,37 @@
+{
+  "name": "app-task",
+  "version": "1.0.0",
+  "main": "node_modules/expo/AppEntry.js",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web"
+  },
+  "dependencies": {
+    "@expo/ngrok": "^4.1.3",
+    "@react-native-community/netinfo": "9.3.10",
+    "@react-navigation/material-bottom-tabs": "^6.2.28",
+    "@react-navigation/native": "^6.1.17",
+    "@react-navigation/native-stack": "^6.9.26",
+    "@types/react-native-sqlite-storage": "^6.0.5",
+    "expo": "^49.0.23",
+    "expo-sqlite": "~11.3.3",
+    "expo-status-bar": "~1.6.0",
+    "npm": "^10.2.4",
+    "react": "18.2.0",
+    "react-date-picker": "^10.6.0",
+    "react-native": "0.72.10",
+    "react-native-paper": "^5.12.3",
+    "react-native-quick-sqlite": "^8.0.6",
+    "react-native-safe-area-context": "4.6.3",
+    "react-native-screens": "~3.22.0",
+    "react-native-sqlite-storage": "^6.0.1",
+    "react-native-vector-icons": "^10.0.3",
+    "sqlite3": "^5.1.7"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.20.0"
+  },
+  "private": true
+}
