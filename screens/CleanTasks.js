@@ -7,15 +7,18 @@ const CleanTasks = ({navigation}) => {
 
     const deleteTable = async () => {
         try {
-            Alert.alert('Eliminación de tareas', 'Se eliminarán las tareas creadas', [
+           await Alert.alert('Eliminación de tareas', 'Se eliminarán las tareas creadas', [
                 {
                     text: 'Cancel',
                     onPress: () => console.log('Cancel Pressed'),
                     style: 'cancel',
                 },
-                {text: 'Aceptar', onPress: async () => await cleanDatabase()},
+                {text: 'Aceptar', onPress: () =>  {
+                    cleanDatabase();
+                    Alert.alert('Tareas eliminadas correctamente',"Se eliminaron todas las tareas")
+                    }},
             ]);
-            navigation.navigate("Tareas", {state: true});
+
         } catch (e) {
             console.log('ERROR Eliminar ' + e)
         }

@@ -22,13 +22,23 @@ export async function cleanDatabase(){
     const db = SQLite.openDatabase(DATABASE_NAME)
     const query = 'DROP TABLE IF EXISTS task';
     db.transaction(function (tx) {tx.executeSql(query)})
-    db.executeSql(query)
 
+}
+
+export async function deleteTask(id){
+    const db = SQLite.openDatabase(DATABASE_NAME)
+    const query = 'DELETE  FROM  task where id=? ';
+    db.transaction(function (tx) {tx.executeSql(query,[id])})
 }
 
 export async function insertTask(db,title,description,fecha){
 
      db.transaction(function (tx) {tx.executeSql('INSERT INTO task (title, description,data_task)  VALUES (?,?,?)', [title, description,fecha])})
+}
+
+export async function updateTask(db,title,description,fecha,id){
+
+    db.transaction(function (tx) {tx.executeSql('UPDATE task SET  title = ?, description = ? ,data_task = ? WHERE id=?', [title, description,fecha,id])})
 }
 
 // export async function getTasks(db){

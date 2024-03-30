@@ -1,40 +1,70 @@
-import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Alert, FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {useCallback, useEffect, useState} from "react";
-import {getDbConnection} from "../Utils/db";
+import {deleteTask, getDbConnection, insertTask} from "../Utils/db";
 import {useFocusEffect} from "@react-navigation/native";
 
+import {createMaterialBottomTabNavigator} from "@react-navigation/material-bottom-tabs";
 
-const Tasks = () => {
+
+const Tasks = ({navigation}) => {
 
     const [tasks, setTasks] = useState([]);
 
     const focusEffect = useCallback(() => {
         async function fechDB() {
-
-            const db = await getDbConnection();
-            var query = "SELECT * FROM task";
-            var params = [];
-            db.transaction((tx) => {
-                tx.executeSql(query, params, (tx, results) => {
-                    setTasks(results.rows._array)
-                    console.log(results.rows._array)
-                }, function (result) {
-                    console.log('Profile: Something went wrong');
-                });
-
-            });
+            await loadTasks();
         }
 
         fechDB()
 
     }, []);
-    useFocusEffect(focusEffect)
+    useFocusEffect(focusEffect);
+
+
+    const loadTasks = async () => {
+        const db = await getDbConnection();
+        var query = "SELECT * FROM task";
+        var params = [];
+        db.transaction((tx) => {
+            tx.executeSql(query, params, (tx, results) => {
+                setTasks(results.rows._array)
+                console.log(results.rows._array)
+            }, function (result) {
+                console.log('Profile: Something went wrong');
+            });
+        });
+    }
+
+    const deleteTaskId = async (id) => {
+
+        try {
+            await Alert.alert('Eliminar', '¿Quiere eliminar la tarea seleccionada?', [
+                {
+                    text: 'Cancel',
+                    onPress: () => console.log('Cancel Pressed'),
+                    style: 'cancel',
+                },
+                {
+                    text: 'Aceptar', onPress: () => {
+                        deleteTask(id);
+                        const arr = tasks.filter((item) => item.id !== id);
+                        setTasks(arr);
+                    }
+                },
+            ]);
+
+        } catch (e) {
+            console.log('ERROR Eliminar ' + e)
+        }
+
+    };
+
 
     const renderItem = ({item}) => (
 
         <View style={styles.container}>
             <View style={{padding: 20}}>
-                <Text>{item.title}   {item.data_task}</Text>
+                <Text>{item.title} {item.data_task}</Text>
                 <Text>{item.description}</Text>
 
             </View>
@@ -42,17 +72,14 @@ const Tasks = () => {
             <View style={styles.containerGrid}>
                 <View style={styles.row}>
 
-                <TouchableOpacity style={styles.button}>
-                    <Text style={styles.textButton}>Ver</Text>
-                </TouchableOpacity>
-
-                    <TouchableOpacity style={styles.butttonDelete}>
-                        <Text style={styles.textButton}>Eliminar</Text>
+                    <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('ViewTask',{task:item})}>
+                        <Text style={styles.textButton}>Visualizar</Text>
                     </TouchableOpacity>
 
+                    <TouchableOpacity style={styles.buttonDelete} onPress={() => deleteTaskId(item.id)}>
+                        <Text style={styles.textButton}>Eliminar</Text>
+                    </TouchableOpacity>
                 </View>
-
-
             </View>
         </View>
     );
@@ -69,27 +96,29 @@ const Tasks = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding:5,
-        backgroundColor: "#fff",
-        borderBlockColor:"#1f232b",
-        borderTopWidth: 0.5 ,
+        padding: 5,
+        backgroundColor: "#ff33",
+        borderBlockColor: "#1f232b",
+        borderColor: '#000',
+        borderRadius: 10,
+        margin: 5
     },
     button: {
-        flex:1,
+        flex: 1,
         alignItems: "center",
         backgroundColor: "#1f232b",
         padding: 5,
-        margin:10,
+        margin: 10,
         borderRadius: 5,
         width: "25%",
     },
 
-    butttonDelete: {
-        flex:1,
+    buttonDelete: {
+        flex: 1,
         alignItems: "center",
         backgroundColor: "#C52E0E",
         padding: 5,
-        margin:10,
+        margin: 10,
         borderRadius: 5,
         width: "25%",
     },

@@ -6,44 +6,41 @@ import {
     Text,
     Alert,
 } from "react-native";
-import React, { useState } from "react";
-import Config from "../config";
-import {getDbConnection, insertTask} from "../Utils/db";
+import React, {useCallback, useEffect, useState} from "react";
+import {getDbConnection, insertTask, updateTask} from "../Utils/db";
+import {useFocusEffect, useRoute} from "@react-navigation/native";
 
-const NewTask = ({ navigation }) => {
-    const api = Config.api;
-    const date = new Date();
-    const formattedDateTime = `${date.getDate().toString().padStart(2, '0')}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getFullYear()}
-     ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`; // Custom format YYYY-MM-DD HH:MM:SS
+const EditTask = ({ navigationEdit},props) => {
 
-
+    const dateEdit = new Date();
+    const formattedDateTime = `${dateEdit.getDate().toString().padStart(2, '0')}-${(dateEdit.getMonth() + 1).toString().padStart(2, '0')}-${dateEdit.getFullYear()}
+     ${dateEdit.getHours().toString().padStart(2, '0')}:${dateEdit.getMinutes().toString().padStart(2, '0')}:${dateEdit.getSeconds().toString().padStart(2, '0')}`; // Custom format YYYY-MM-DD HH:MM:SS
+    const route = useRoute();
 
     const [newTask, setNewTask] = useState({
-        title: "",
+        title:'',
         description: "",
         fecha:""
 
     });
 
+
+
     const handleChangeText = (name, value) => {
         setNewTask({ ...newTask, [name]: value });
-
     };
 
 
     const saveTask = async () => {
-        // const sendData = {
-        //     title: newTask.title,
-        //     description: newTask.description,
-        // };
+
 
         try{
             let db =   await getDbConnection();
 
-            await insertTask(db,newTask.title,newTask.description,formattedDateTime);
-            await Alert.alert('Success','Task created',[{
+            await updateTask(db,newTask.title,newTask.description,formattedDateTime,route.params.task.id);
+            await Alert.alert('Success','Task save',[{
                 text:'OK',
-                onPress: ()=>navigation.navigate('Tareas')
+                // onPress: ()=>navigationEdit.navigate('Tareas')
             }])
 
 
@@ -52,47 +49,21 @@ const NewTask = ({ navigation }) => {
         }
 
 
-        // await fetch(api + "new-task.php", {
-        //     method: "POST",
-        //     header: {
-        //         Accept: "application/json",
-        //         "Content-Type": "application/json",
-        //     },
-        //     body: JSON.stringify(sendData),
-        // })
-        //     .then((res) => res.json())
-        //     .catch((error) => {
-        //         Alert.alert("Error!", "Inténtalo más tarde");
-        //     })
-        //     .then((response) => {
-        //         if (response.message === "error") {
-        //             Alert.alert("Error!", "Inténtalo más tarde");
-        //         } else {
-        //             //Redirigimos a tasks
-        //             navigation.navigate("Tareas", {state: true});
-        //         }
-        //     });
-
-        // console.log(newTask);
-        setNewTask({
-            title: "",
-            description: "",
-
-        });
     };
 
     return (
         <View style={styles.container}>
             <View style={styles.titleContainer}>
-                <Text style={styles.title}>Crea una nueva tarea</Text>
+                <Text style={styles.title}>Vista de tarea</Text>
             </View>
 
             <View style={styles.form}>
                 <View style={styles.inputGroup}>
                     <TextInput
                         placeholder="Título"
-                        value={newTask.title}
+                        defaultValue={route.params?route.params.task.title:newTask.title}
                         onChangeText={(value) => handleChangeText("title", value)}
+
                     />
                 </View>
                 <View style={styles.inputGroup}>
@@ -100,14 +71,15 @@ const NewTask = ({ navigation }) => {
                         placeholder="Descripción"
                         multiline={true}
                         numberOfLines={12}
-                        style={{ textAlignVertical: "top" }}
-                        value={newTask.description}
+                        rstyle={{ textAlignVertical: "top" }}
+                        defaultValue={route.params?route.params.task.description:newTask.description}
                         onChangeText={(value) => handleChangeText("description", value)}
                     />
+
                 </View>
 
                 <TouchableOpacity style={styles.button} onPress={saveTask}>
-                    <Text style={styles.textButton}>Guardar tarea</Text>
+                    <Text style={styles.textButton}>Guardar</Text>
                 </TouchableOpacity>
 
             </View>
@@ -156,4 +128,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default NewTask;
+export default EditTask;

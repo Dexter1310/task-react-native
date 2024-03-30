@@ -4,9 +4,10 @@ import {useTheme} from "react-native-paper";
 import {ImageBackground, StyleSheet} from "react-native";
 import Tasks from "./Tasks"
 import NewTask from "./NewTask";
-import {initDataBase} from "../Utils/db";
-import {useEffect} from "react";
+
 import CleanTasks from "./CleanTasks";
+import EditTask from "./EditTask";
+import {useState} from "react";
 
 
 const Tab = createMaterialBottomTabNavigator();
@@ -20,8 +21,9 @@ const Menu = () => {
     //     init().then(r => {console.log('success')})
     // }, []);
 
-    const  theme = useTheme();
-    theme.colors.secondaryContainer= '#e6e9e7'; //Color menu
+    const theme = useTheme();
+
+    theme.colors.secondaryContainer = '#e6e9e7'; //Color menu
 
 
     return (
@@ -32,6 +34,13 @@ const Menu = () => {
             barStyle={style.navigationBar}
 
         >
+
+            <Tab.Screen style={{opacity: 0}}
+                        name="ViewTask"
+                        component={EditTask}
+                       />
+
+
             <Tab.Screen
                 name="Tareas"
                 component={Tasks}
@@ -74,9 +83,11 @@ const Menu = () => {
 const style = StyleSheet.create({
     navigationBar: {
         backgroundColor: '#ff33',
-        borderTopWidth: 0.5 ,
+        borderTopWidth: 0.5,
         borderTopColor: '#000'
-    }
+    },
+    hidden: {}
+
 })
 
 export default Menu
