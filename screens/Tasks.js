@@ -2,8 +2,8 @@ import {Alert, FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-n
 import {useCallback, useEffect, useState} from "react";
 import {deleteTask, getDbConnection, insertTask} from "../Utils/db";
 import {useFocusEffect} from "@react-navigation/native";
+import HTMLView from "react-native-htmlview/HTMLView";
 
-import {createMaterialBottomTabNavigator} from "@react-navigation/material-bottom-tabs";
 
 
 const Tasks = ({navigation}) => {
@@ -62,26 +62,23 @@ const Tasks = ({navigation}) => {
 
     const renderItem = ({item}) => (
 
-        <View style={styles.container}>
-            <View style={{padding: 20}}>
-                <Text>{item.title} {item.data_task}</Text>
-                <Text>{item.description}</Text>
+        <TouchableOpacity style={styles.container} onPress={() => navigation.navigate('ViewTask',{task:item})}>
 
-            </View>
-
-            <View style={styles.containerGrid}>
-                <View style={styles.row}>
-
-                    <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('ViewTask',{task:item})}>
-                        <Text style={styles.textButton}>Visualizar</Text>
-                    </TouchableOpacity>
-
+            <View>
+                <View>
                     <TouchableOpacity style={styles.buttonDelete} onPress={() => deleteTaskId(item.id)}>
                         <Text style={styles.textButton}>Eliminar</Text>
                     </TouchableOpacity>
                 </View>
+                    <Text style={styles.data_task}>{item.data_task}</Text>
             </View>
-        </View>
+            <View style={{padding:10}}>
+                <Text style={{textAlign:"left"}}>{item.title}</Text>
+            </View>
+
+                <HTMLView value={item.description}/>
+
+        </TouchableOpacity>
     );
 
     return (
@@ -103,6 +100,19 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         margin: 5
     },
+    data_task:{
+        textAlign:"right",
+
+    },
+    inputGroup: {
+        flex:1,
+        padding: 10,
+        marginBottom: 32,
+        borderWidth: 1,
+        borderColor: "#cccccc",
+        borderRadius: 5,
+        backgroundColor:'#fff'
+    },
     button: {
         flex: 1,
         alignItems: "center",
@@ -114,7 +124,7 @@ const styles = StyleSheet.create({
     },
 
     buttonDelete: {
-        flex: 1,
+        // flex: 1,
         alignItems: "center",
         backgroundColor: "#C52E0E",
         padding: 5,
@@ -127,19 +137,13 @@ const styles = StyleSheet.create({
         color: "#fff",
     },
     containerGrid: {
+        backgroundColor: "#7CA1B4",
         flex: 1,
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
+        alignItems: "center", // ignore this - we'll come back to it
+        justifyContent: "center", // ignore this - we'll come back to it
+        flexDirection: "column"
     },
-    row: {
-        flexDirection: 'row',
-    },
-    column: {
-        width: 100,
-        height: 100,
-        backgroundColor: 'blue',
-        margin: 5,
-    },
+
+
 });
 export default Tasks

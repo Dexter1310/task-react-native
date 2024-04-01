@@ -9,6 +9,8 @@ const Stack = createNativeStackNavigator();
 export default function App() {
 
     return (
+
+
         <NavigationContainer>
             <Stack.Navigator>
             <Stack.Screen name="Menu"
@@ -23,6 +25,7 @@ export default function App() {
                               headerTitleStyle: {
                                   fontWeight: 'bold'
                               }
+                              ,
                           }}
             />
             </Stack.Navigator>

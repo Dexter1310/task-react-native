@@ -4,7 +4,7 @@ import {
     TextInput,
     TouchableOpacity,
     Text,
-    Alert,
+    Alert, ScrollView,
 } from "react-native";
 import React, { useState } from "react";
 import Config from "../config";
@@ -14,7 +14,7 @@ const NewTask = ({ navigation }) => {
     const api = Config.api;
     const date = new Date();
     const formattedDateTime = `${date.getDate().toString().padStart(2, '0')}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getFullYear()}
-     ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`; // Custom format YYYY-MM-DD HH:MM:SS
+     ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`; // Custom format YYYY-MM-DD HH:MM:SS
 
 
 
@@ -82,7 +82,7 @@ const NewTask = ({ navigation }) => {
     };
 
     return (
-        <View style={styles.container}>
+        <ScrollView style={styles.container}>
             <View style={styles.titleContainer}>
                 <Text style={styles.title}>Crea una nueva tarea</Text>
             </View>
@@ -99,19 +99,18 @@ const NewTask = ({ navigation }) => {
                     <TextInput
                         placeholder="Descripción"
                         multiline={true}
-                        numberOfLines={12}
+                        numberOfLines={8}
                         style={{ textAlignVertical: "top" }}
                         value={newTask.description}
                         onChangeText={(value) => handleChangeText("description", value)}
                     />
                 </View>
-
                 <TouchableOpacity style={styles.button} onPress={saveTask}>
                     <Text style={styles.textButton}>Guardar tarea</Text>
                 </TouchableOpacity>
 
             </View>
-        </View>
+        </ScrollView>
     );
 };
 

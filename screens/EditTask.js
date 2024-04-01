@@ -4,11 +4,15 @@ import {
     TextInput,
     TouchableOpacity,
     Text,
-    Alert,
+    Alert, ScrollView, Platform, KeyboardAvoidingView, SafeAreaView,
 } from "react-native";
-import React, {useCallback, useEffect, useState} from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import {getDbConnection, insertTask, updateTask} from "../Utils/db";
 import {useFocusEffect, useRoute} from "@react-navigation/native";
+import {actions, RichEditor, RichToolbar} from "react-native-pell-rich-editor";
+
+
+
 
 const EditTask = ({ navigationEdit},props) => {
 
@@ -19,71 +23,84 @@ const EditTask = ({ navigationEdit},props) => {
 
     const [newTask, setNewTask] = useState({
         title:'',
-        description: "",
+        description: route.params?route.params.task.description : newTask.description,
         fecha:""
 
     });
 
+    const richText = React.createRef() || useRef();
+
+    const handleHead = ({tintColor}) => <Text style={{color: tintColor}}>H1</Text>
 
 
     const handleChangeText = (name, value) => {
         setNewTask({ ...newTask, [name]: value });
     };
 
-
     const saveTask = async () => {
-
 
         try{
             let db =   await getDbConnection();
-
             await updateTask(db,newTask.title,newTask.description,formattedDateTime,route.params.task.id);
             await Alert.alert('Success','Task save',[{
                 text:'OK',
                 // onPress: ()=>navigationEdit.navigate('Tareas')
             }])
 
-
         }catch (e){
             console.log('ERROR ORIGEN: '+e)
         }
-
-
     };
 
     return (
-        <View style={styles.container}>
+        <ScrollView style={styles.container}>
             <View style={styles.titleContainer}>
                 <Text style={styles.title}>Vista de tarea</Text>
             </View>
-
             <View style={styles.form}>
                 <View style={styles.inputGroup}>
                     <TextInput
                         placeholder="Título"
-                        defaultValue={route.params?route.params.task.title:newTask.title}
+                        defaultValue={route.params ? route.params.task.title : newTask.title}
                         onChangeText={(value) => handleChangeText("title", value)}
 
                     />
                 </View>
-                <View style={styles.inputGroup}>
-                    <TextInput
-                        placeholder="Descripción"
-                        multiline={true}
-                        numberOfLines={12}
-                        rstyle={{ textAlignVertical: "top" }}
-                        defaultValue={route.params?route.params.task.description:newTask.description}
-                        onChangeText={(value) => handleChangeText("description", value)}
-                    />
 
-                </View>
+                <SafeAreaView style={styles.inputGroup}>
+                    <ScrollView>
+                        <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}	style={{ flex: 1}}>
+
+                            <RichEditor
+                                ref={richText}
+                                onChange={(value=route.params ? route.params.task.description : newTask.description) => handleChangeText("description", value)}
+                            />
+                        </KeyboardAvoidingView>
+                    </ScrollView>
+
+                    <RichToolbar
+                        editor={richText}
+                        actions={[
+                            actions.setBold,
+                            actions.insertImage,
+                            actions.setItalic,
+                            actions.insertBulletsList,
+                            actions.insertOrderedList,
+                            actions.heading1,
+                            actions.insertHTML,
+                            actions.insertLink,
+                        ]}
+                        iconMap={{ [actions.heading1]: handleHead }}
+
+                    />
+                </SafeAreaView>
 
                 <TouchableOpacity style={styles.button} onPress={saveTask}>
                     <Text style={styles.textButton}>Guardar</Text>
                 </TouchableOpacity>
 
             </View>
-        </View>
+        </ScrollView>
     );
 };
 
@@ -94,7 +111,7 @@ const styles = StyleSheet.create({
     },
     titleContainer: {
         alignItems: "center",
-        marginTop: 20,
+        // marginTop: 20,
     },
     title: {
         fontSize: 18,
@@ -106,6 +123,7 @@ const styles = StyleSheet.create({
         padding: 40,
     },
     inputGroup: {
+        flex:4,
         padding: 10,
         marginBottom: 32,
         borderWidth: 1,

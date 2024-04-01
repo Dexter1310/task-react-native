@@ -1,13 +1,12 @@
 import {createMaterialBottomTabNavigator} from "@react-navigation/material-bottom-tabs";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import {useTheme} from "react-native-paper";
-import {ImageBackground, StyleSheet} from "react-native";
+import {ImageBackground, StyleSheet, View} from "react-native";
 import Tasks from "./Tasks"
 import NewTask from "./NewTask";
-
 import CleanTasks from "./CleanTasks";
 import EditTask from "./EditTask";
-import {useState} from "react";
+
 
 
 const Tab = createMaterialBottomTabNavigator();
@@ -25,21 +24,21 @@ const Menu = () => {
 
     theme.colors.secondaryContainer = '#e6e9e7'; //Color menu
 
+    const ok=false;
+
+
 
     return (
         <Tab.Navigator
+            screenOptions={{
+                headerShown: ok,
+            }}
             tabBarActivateBackgroundColor="#fff"
             activateColor='#000'
             inactiveColor='#95a5a6'
             barStyle={style.navigationBar}
 
         >
-
-            <Tab.Screen style={{opacity: 0}}
-                        name="ViewTask"
-                        component={EditTask}
-                       />
-
 
             <Tab.Screen
                 name="Tareas"
@@ -51,6 +50,13 @@ const Menu = () => {
                     )
                 }}
             />
+
+
+                    <Tab.Screen
+                        name="ViewTask"
+                        component={EditTask}
+                    />
+
 
             <Tab.Screen
                 name="Nueva Tarea"
@@ -86,7 +92,7 @@ const style = StyleSheet.create({
         borderTopWidth: 0.5,
         borderTopColor: '#000'
     },
-    hidden: {}
+
 
 })
 
