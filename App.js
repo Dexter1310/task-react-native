@@ -4,6 +4,7 @@ import {NavigationContainer} from "@react-navigation/native";
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import Menu from "./screens/Menu";
 import EditTask from "./screens/EditTask";
+import ViewTask from "./screens/ViewTask";
 
 const Stack = createNativeStackNavigator();
 
@@ -32,6 +33,10 @@ export default function App() {
                 <Stack.Screen
                     name="ViewTask"
                     component={EditTask}
+                />
+                <Stack.Screen
+                    name="Task"
+                    component={ViewTask}
                 />
             </Stack.Navigator>
         </NavigationContainer>

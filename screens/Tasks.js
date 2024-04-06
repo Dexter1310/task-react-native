@@ -65,20 +65,30 @@ const Tasks = ({navigation}) => {
     const renderItem = ({item}) => (
 
 
-        <TouchableOpacity style={styles.container} onPress={() => navigation.navigate('ViewTask', {task: item})}>
+        <TouchableOpacity style={styles.container} onPress={() => navigation.navigate('Task', {task: item})}>
             <View style={styles.row}>
-                <View style={styles.box1}>
-                <TouchableOpacity onPress={() => deleteTaskId(item.id)}>
-                    <Text>{<MaterialCommunityIcons name="delete-forever" color="red" size={30}/>}</Text>
-                </TouchableOpacity>
+
+                <View style={styles.row}>
+                    <View style={styles.box1}>
+                        <TouchableOpacity onPress={() => deleteTaskId(item.id)}>
+                            <Text>{<MaterialCommunityIcons name="delete-forever" color="red" size={30}/>}</Text>
+                        </TouchableOpacity>
+
+                    </View>
+                    <View style={styles.box1}>
+                        <TouchableOpacity  onPress={() => navigation.navigate('ViewTask', {task: item})}>
+                            <Text>{<MaterialCommunityIcons name="cog" color="grey" size={25}/>}</Text>
+                        </TouchableOpacity>
+                    </View>
+
                 </View>
+
+
                 <View>
                     <Text style={styles.data_task}>{item.data_task}</Text>
                 </View>
 
             </View>
-
-
 
 
             <View style={styles.contentTask}>
@@ -130,12 +140,12 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         width: "25%",
     },
-    contentTask:{
-        padding:5,
-        backgroundColor:'#fff',
-        marginTop:5,
-        marginBottom:5,
-        borderRadius:5
+    contentTask: {
+        padding: 5,
+        backgroundColor: '#fff',
+        marginTop: 5,
+        marginBottom: 5,
+        borderRadius: 5
     },
 
     buttonDelete: {
@@ -164,7 +174,8 @@ const styles = StyleSheet.create({
 
     },
     box1: {
-        padding:2,
+        marginLeft:2,
+        padding: 2,
         borderRadius: 5,
         backgroundColor: '#fff',
         alignItems: "center", // ignore this - we'll come back to it
