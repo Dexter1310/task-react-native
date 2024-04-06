@@ -7,25 +7,25 @@ const CleanTasks = ({navigation}) => {
 
     const deleteTable = async () => {
         try {
-           await Alert.alert('Eliminación de tareas', 'Se eliminarán las tareas creadas', [
+           await Alert.alert('Deleting tasks', 'All created tasks are deleted', [
                 {
                     text: 'Cancel',
                     onPress: () => console.log('Cancel Pressed'),
                     style: 'cancel',
                 },
-                {text: 'Aceptar', onPress: () =>  {
+                {text: 'Accept', onPress: () =>  {
                     cleanDatabase();
-                    Alert.alert('Tareas eliminadas correctamente',"Se eliminaron todas las tareas")
+                    Alert.alert('Tasks successfully deleted',"All tasks were deleted")
                     }},
             ]);
 
         } catch (e) {
-            console.log('ERROR Eliminar ' + e)
+            console.log('ERROR Delete ' + e)
         }
     }
     return (
         <TouchableOpacity style={styles.button} onPress={deleteTable}>
-            <Text style={styles.textButton}>Eliminar tareas</Text>
+            <Text style={styles.textButton}>Delete tasks</Text>
         </TouchableOpacity>
     );
 };

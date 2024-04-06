@@ -44,7 +44,7 @@ const Menu = () => {
                 name="Tareas"
                 component={Tasks}
                 options={{
-                    tabBarLabel: "Tareas",
+                    tabBarLabel: "Tasks",
                     tabBarIcon: () => (
                         <MaterialCommunityIcons name="format-list-bulleted" color="#000" size={24}/>
                     )
@@ -52,17 +52,14 @@ const Menu = () => {
             />
 
 
-                    <Tab.Screen
-                        name="ViewTask"
-                        component={EditTask}
-                    />
+
 
 
             <Tab.Screen
                 name="Nueva Tarea"
                 component={NewTask}
                 options={{
-                    tabBarLabel: "Nueva Tarea",
+                    tabBarLabel: "New Task",
                     tabBarIcon: () => (
                         <MaterialCommunityIcons name="plus-box" color="#000" size={24}/>
                     )
@@ -73,7 +70,7 @@ const Menu = () => {
                 name="Limpiar"
                 component={CleanTasks}
                 options={{
-                    tabBarLabel: "Limpiar tareas",
+                    tabBarLabel: "Clean task",
                     tabBarIcon: () => (
                         <MaterialCommunityIcons name="delete-sweep" color="#000" size={24}/>
                     )

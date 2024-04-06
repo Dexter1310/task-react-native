@@ -1,9 +1,10 @@
 import {Alert, FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {useCallback, useEffect, useState} from "react";
+import {useCallback, useEffect, useRef, useState} from "react";
 import {deleteTask, getDbConnection, insertTask} from "../Utils/db";
 import {useFocusEffect} from "@react-navigation/native";
 import HTMLView from "react-native-htmlview/HTMLView";
-
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import EditTask from "./EditTask";
 
 
 const Tasks = ({navigation}) => {
@@ -17,6 +18,7 @@ const Tasks = ({navigation}) => {
 
         fechDB()
 
+
     }, []);
     useFocusEffect(focusEffect);
 
@@ -28,7 +30,7 @@ const Tasks = ({navigation}) => {
         db.transaction((tx) => {
             tx.executeSql(query, params, (tx, results) => {
                 setTasks(results.rows._array)
-                console.log(results.rows._array)
+                // console.log(results.rows._array)
             }, function (result) {
                 console.log('Profile: Something went wrong');
             });
@@ -62,22 +64,27 @@ const Tasks = ({navigation}) => {
 
     const renderItem = ({item}) => (
 
-        <TouchableOpacity style={styles.container} onPress={() => navigation.navigate('ViewTask',{task:item})}>
 
-            <View>
-                <View>
-                    <TouchableOpacity style={styles.buttonDelete} onPress={() => deleteTaskId(item.id)}>
-                        <Text style={styles.textButton}>Eliminar</Text>
-                    </TouchableOpacity>
+        <TouchableOpacity style={styles.container} onPress={() => navigation.navigate('ViewTask', {task: item})}>
+            <View style={styles.row}>
+                <View style={styles.box1}>
+                <TouchableOpacity onPress={() => deleteTaskId(item.id)}>
+                    <Text>{<MaterialCommunityIcons name="delete-forever" color="red" size={30}/>}</Text>
+                </TouchableOpacity>
                 </View>
+                <View>
                     <Text style={styles.data_task}>{item.data_task}</Text>
-            </View>
-            <View style={{padding:10}}>
-                <Text style={{textAlign:"left"}}>{item.title}</Text>
+                </View>
+
             </View>
 
+
+
+
+            <View style={styles.contentTask}>
+                <Text style={{textAlign: "center"}}>{item.title}</Text>
                 <HTMLView value={item.description}/>
-
+            </View>
         </TouchableOpacity>
     );
 
@@ -87,6 +94,7 @@ const Tasks = ({navigation}) => {
             renderItem={renderItem}
             keyExtractor={item => item.id}
         />
+
     )
 }
 
@@ -100,18 +108,18 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         margin: 5
     },
-    data_task:{
-        textAlign:"right",
+    data_task: {
+        textAlign: "right",
 
     },
     inputGroup: {
-        flex:1,
+        flex: 1,
         padding: 10,
         marginBottom: 32,
         borderWidth: 1,
         borderColor: "#cccccc",
         borderRadius: 5,
-        backgroundColor:'#fff'
+        backgroundColor: '#fff'
     },
     button: {
         flex: 1,
@@ -121,6 +129,13 @@ const styles = StyleSheet.create({
         margin: 10,
         borderRadius: 5,
         width: "25%",
+    },
+    contentTask:{
+        padding:5,
+        backgroundColor:'#fff',
+        marginTop:5,
+        marginBottom:5,
+        borderRadius:5
     },
 
     buttonDelete: {
@@ -142,6 +157,19 @@ const styles = StyleSheet.create({
         alignItems: "center", // ignore this - we'll come back to it
         justifyContent: "center", // ignore this - we'll come back to it
         flexDirection: "column"
+    },
+    row: {
+        flexDirection: 'row', // Main axis
+        justifyContent: 'space-between',
+
+    },
+    box1: {
+        padding:2,
+        borderRadius: 5,
+        backgroundColor: '#fff',
+        alignItems: "center", // ignore this - we'll come back to it
+        justifyContent: "center", // ignore this - we'll come back to it
+
     },
 
 

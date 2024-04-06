@@ -4,31 +4,34 @@ import {
     TextInput,
     TouchableOpacity,
     Text,
-    Alert, ScrollView,
+    Alert, ScrollView, SafeAreaView, KeyboardAvoidingView, Platform,
 } from "react-native";
-import React, { useState } from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import Config from "../config";
 import {getDbConnection, insertTask} from "../Utils/db";
+import {actions, RichEditor, RichToolbar} from "react-native-pell-rich-editor";
+import {useFocusEffect} from "@react-navigation/native";
+import title from "react-native-paper/src/components/Typography/v2/Title";
 
-const NewTask = ({ navigation }) => {
+const NewTask = ({navigation}) => {
     const api = Config.api;
     const date = new Date();
     const formattedDateTime = `${date.getDate().toString().padStart(2, '0')}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getFullYear()}
      ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`; // Custom format YYYY-MM-DD HH:MM:SS
 
 
-
+    let richTextNew = React.createRef() || useRef();
     const [newTask, setNewTask] = useState({
         title: "",
         description: "",
-        fecha:""
+        fecha: ""
 
     });
-
     const handleChangeText = (name, value) => {
-        setNewTask({ ...newTask, [name]: value });
+        setNewTask({...newTask, [name]: value});
 
     };
+
 
 
     const saveTask = async () => {
@@ -37,20 +40,25 @@ const NewTask = ({ navigation }) => {
         //     description: newTask.description,
         // };
 
-        try{
-            let db =   await getDbConnection();
+        try {
+            let db = await getDbConnection();
 
-            await insertTask(db,newTask.title,newTask.description,formattedDateTime);
-            await Alert.alert('Success','Task created',[{
-                text:'OK',
-                onPress: ()=>navigation.navigate('Tareas')
+            await insertTask(db, newTask.title, newTask.description, formattedDateTime);
+
+            await Alert.alert('Success', 'Task created', [{
+                text: 'OK',
+                onPress: () => navigation.navigate('Tareas')
             }])
 
 
-        }catch (e){
-            console.log('ERROR ORIGEN: '+e)
+        } catch (e) {
+            console.log('ERROR ORIGEN: ' + e)
         }
+        setNewTask({
+            title: "",
+            description: "",
 
+        });
 
         // await fetch(api + "new-task.php", {
         //     method: "POST",
@@ -74,17 +82,14 @@ const NewTask = ({ navigation }) => {
         //     });
 
         // console.log(newTask);
-        setNewTask({
-            title: "",
-            description: "",
 
-        });
     };
+
 
     return (
         <ScrollView style={styles.container}>
             <View style={styles.titleContainer}>
-                <Text style={styles.title}>Crea una nueva tarea</Text>
+                <Text style={styles.title}>New task</Text>
             </View>
 
             <View style={styles.form}>
@@ -95,18 +100,40 @@ const NewTask = ({ navigation }) => {
                         onChangeText={(value) => handleChangeText("title", value)}
                     />
                 </View>
-                <View style={styles.inputGroup}>
-                    <TextInput
-                        placeholder="Descripción"
-                        multiline={true}
-                        numberOfLines={8}
-                        style={{ textAlignVertical: "top" }}
-                        value={newTask.description}
-                        onChangeText={(value) => handleChangeText("description", value)}
+
+
+                <SafeAreaView style={styles.inputGroup}>
+                    <ScrollView>
+                        <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{flex: 1}}>
+
+                            <RichEditor
+                                ref={richTextNew}
+                                initialHeight={200}
+                                onChange={(value) => {handleChangeText("description", value)}}
+                                onFocus={()=>richTextNew.current.setContentHTML('')}
+
+                            />
+                        </KeyboardAvoidingView>
+                    </ScrollView>
+
+                    <RichToolbar
+                        editor={richTextNew}
+
+
+                        actions={[
+                            actions.keyboard,
+                            actions.setBold,
+                            actions.setItalic,
+                            actions.setUnderline,
+                            actions.insertBulletsList,
+                            actions.insertOrderedList,
+                            actions.insertLink,
+
+                        ]}
                     />
-                </View>
+                </SafeAreaView>
                 <TouchableOpacity style={styles.button} onPress={saveTask}>
-                    <Text style={styles.textButton}>Guardar tarea</Text>
+                    <Text style={styles.textButton}>Save task</Text>
                 </TouchableOpacity>
 
             </View>
